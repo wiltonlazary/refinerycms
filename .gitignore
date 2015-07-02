@@ -92,3 +92,5 @@ Gemfile.lock
 *.txt
 
 *.orig
+db/
+config/initializers
