@@ -30,8 +30,6 @@ end
 
 append_file 'Gemfile' do
 "
-gem 'quiet_assets', group: :development
-
 # Add support for searching inside Refinery's admin interface.
 gem 'refinerycms-acts-as-indexed', ['~> 2.0', '>= 2.0.0']
 
