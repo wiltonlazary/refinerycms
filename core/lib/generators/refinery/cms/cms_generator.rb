@@ -141,6 +141,14 @@ end
 
     def deploy_to_hosting?
       if heroku?
+        begin
+          raise if system('heroku -v').blank?
+        rescue => e
+          fail <<-ERROR
+\033[31m[ABORTING]\033[0m Heroku Toolbelt is not installed. Please re-start the installer after installing at:\nhttps://devcenter.heroku.com/articles/heroku-command-line
+ERROR
+        end
+
         append_heroku_gems!
 
         # Sanity check the heroku application name and save whatever messages are produced.
