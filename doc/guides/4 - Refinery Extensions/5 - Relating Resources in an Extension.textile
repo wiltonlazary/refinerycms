@@ -24,9 +24,9 @@ To add your EventType model, run the following command.
   $ rails g refinery:engine event_type name:string --extension events --namespace events
 </shell>
 
-TIP: You can additionally specify +--pretend+ to simulate generation, so you may inspect the outcome without actually modifying anything.
+TIP: You can additionally specify `--pretend` to simulate generation, so you may inspect the outcome without actually modifying anything.
 
-Notice the last arguments (+--extension <extension_name> --namespace <extension_name>+). This is how Refinery knows which extension to insert your new code. The +--namespace+ argument is necessary because Refinery will create a namespace for your extension by default. If you don't specify one, it's the name of the first scaffold you created. In this case, the namespace is +events+.
+Notice the last arguments (`--extension <extension_name> --namespace <extension_name>`). This is how Refinery knows which extension to insert your new code. The `--namespace` argument is necessary because Refinery will create a namespace for your extension by default. If you don't specify one, it's the name of the first scaffold you created. In this case, the namespace is `events`.
 
 
 Running this command will produce the following output:
@@ -85,7 +85,7 @@ rake db:seed
 ------------------------
 </shell>
 
-WARNING: If you are presented with a conflict in the +events_generator.rb+ file, say no! This happens at the moment because Refinery thinks you are generating a Places extension, and this may cause all kinds of havoc if you agree to it. If you have accidentally agreed to it, you can revert that file, and check your +db/seeds.rb+ file to see if you have accidentally appended an additional line reading +Refinery::Events::Engine.load_seed+.
+WARNING: If you are presented with a conflict in the `events_generator.rb` file, say no! This happens at the moment because Refinery thinks you are generating a Places extension, and this may cause all kinds of havoc if you agree to it. If you have accidentally agreed to it, you can revert that file, and check your `db/seeds.rb` file to see if you have accidentally appended an additional line reading `Refinery::Events::Engine.load_seed`.
 
 Run the commands listed above to actually create your files and migrate the database.
 
@@ -112,7 +112,7 @@ h4. Linking the models in our engine
 
 Now that we have an EventType model, we need to tell Rails how these are linked:
 
-Open up +vendor/extensions/events/app/models/refinery/events/event_type.rb+ and look at its contents:
+Open up `vendor/extensions/events/app/models/refinery/events/event_type.rb` and look at its contents:
 
 <ruby>
 module Refinery
@@ -151,7 +151,7 @@ end
 
 Naturally, there is also a belongs_to relationship between an Event and an EventType (an Event belongs_to an EventType).  We also need to ensure that event_type_id is in the list of attr_accessible fields, otherwise it will get ignored during the update.
 
-Open up +vendor/extensions/events/app/models/refinery/events/event.rb+ and look at its contents:
+Open up `vendor/extensions/events/app/models/refinery/events/event.rb` and look at its contents:
 
 <ruby>
 module Refinery
@@ -198,7 +198,7 @@ h4. Modifying the Controller to gather information for our sub-table
 
 Ultimately, we will need some collection of "event types" in our Events view... that collection is what we'll use to create the select box.  So, to make that happen, the best (and most proper) way is to modify the Events controller so that it automatically creates an @event_types variable that we'll use in the view.
 
-Open up +vendor/extensions/events/app/controllers/refinery/events/admin/events_controller.rb+ and look at its contents:
+Open up `vendor/extensions/events/app/controllers/refinery/events/admin/events_controller.rb` and look at its contents:
 
 WARNING: Be sure you are looking at the /events/admin/events_controller not the /events/events_controller!
 
@@ -217,7 +217,7 @@ end
 </ruby>
 
 
-Now, add a function to "find_all_event_types", and call that function in a before_action. The @event_types variable will be needed in all actions that utilize the +vendor/extensions/events/app/views/refinery/events/admin/events/_form.rb+ partial (all actions except :show and :destroy). Your controller should look like this when you are done:
+Now, add a function to "find_all_event_types", and call that function in a before_action. The @event_types variable will be needed in all actions that utilize the `vendor/extensions/events/app/views/refinery/events/admin/events/_form.rb` partial (all actions except :show and :destroy). Your controller should look like this when you are done:
 
 <ruby>
 module Refinery
@@ -247,7 +247,7 @@ h4. Modifying the View to display and store the sub-table select box
 
 You are almost done!  Just have to put the code in your view that will display the select box.  This is the easiest part:
 
-Open up +vendor/extensions/events/app/views/refinery/events/admin/events/_form.rb+.  In that file, wherever you want your select box to appear, simply add this rails code below (we added ours between the :title and :date sections):
+Open up `vendor/extensions/events/app/views/refinery/events/admin/events/_form.rb`.  In that file, wherever you want your select box to appear, simply add this rails code below (we added ours between the :title and :date sections):
 
 <ruby>
 <div class="field">

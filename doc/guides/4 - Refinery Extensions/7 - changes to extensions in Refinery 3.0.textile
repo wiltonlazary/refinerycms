@@ -10,21 +10,19 @@ A full discussion of the changes and how to take advantage of them is in ()
 
 h2. Assets
 
-If the extension has assets that should always be compiled with the Refinery backend 
+If the extension has assets that should always be compiled with the Refinery backend
 add the following code to the file @extension/config/initializers/refinery/core.rb@.
 
 bc..
   Refinery::Core.configure do |config|
     # Register extra javascripts for backend
     config.register_javascript "refinerycms-extension.js"
-  
+
     # Register extra stylesheets for backend
     config.register_stylesheet "refinerycms-extension.css"
-     
+
   end
   Rails.application.config.assets.precompile += %w( refinerycms-extension.css refinerycms-extension.js )
-
-p.
 
 _Note 1_: you must specify the *targets* of the precompile rather than the files you are using. If you are using Coffeescript and SASS you must still add _extension.js_ and _extension.css_ to the precompile array.
 
@@ -34,13 +32,13 @@ _Note 2:_ it is a good idea to name your extension's asset files with the full n
 *Better*: refinerycms-gadgets.js, refinerycms-gadgets.scss
 
 The innocent developer may well write his own @gadgets.css@, but is unlikely to call his stylesheet @refinerycms-gadgets.css@.
- 
+
 h2. Decorators and Strong Parameters
 
 Rails 4 requires the use of strong parameters.
 
-If your engine adds fields to a page, blog post or other Refinery object you need to add your fields 
-to the Refinery::Page's (BlogPost, etc) list of accepted parameters. 
+If your engine adds fields to a page, blog post or other Refinery object you need to add your fields
+to the Refinery::Page's (BlogPost, etc) list of accepted parameters.
 
 Here is an example that allows a page to be created or updated with extra fields.
 
@@ -60,15 +58,13 @@ bc..
 
   # app/decorators/models/refinery/gadgets_page_decorator.rb
 
-  # Open the Refinery::Page model for manipulation 
+  # Open the Refinery::Page model for manipulation
   Refinery::Page.class_eval do
     attr_accessor :gadgets
-    
+
     def gadgets
       @gadgets = Gadgets.best(gadget_count) if gadget_enabled
     end
   end
 
-p.
-
-When it comes to writing a view you can now use @page.gadgets@ to access the gadgets collection.
+When it comes to writing a view you can now use `@page.gadgets` to access the gadgets collection.

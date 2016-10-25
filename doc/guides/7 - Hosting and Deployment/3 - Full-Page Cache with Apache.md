@@ -1,38 +1,44 @@
-h2. Full-Page Cache with Apache
+# Full-Page Cache with Apache
 
 If you have a simple Page on a slow Server with Apache you can use the Full
 Page Caching for deliver the most pages directly from Apache (without passenger).
 
 endprologue.
 
-h3. Activate "Cache Pages Full"
+### Activate "Cache Pages Full"
 
 Inside `config/initializers/refinery/pages.rb`, find the line that reads:
 
-<ruby>
-# config.cache_pages_full = false
-</ruby>
+```ruby
+
+
+1.  config.cache_pages_full = false
+
+```
 
 Set it to true, and uncomment the line:
 
-<ruby>
+```ruby
+
 config.cache_pages_full = true
-</ruby>
+
+```
 
 Then restart your server.
 
 From then on, every page you request from Refinery CMS will be saved at
 public/refinery/cache/pages. For exapmle, after you request
-`http://your-website/about`, you will find a file named 
+`http://your-website/about`, you will find a file named
 `public/refinery/cache/pages/about.html` inside your application folder.
 
-h3. Redirect
+### Redirect
 
 Now we have to redirect Apache to these generated files.
-Add the following to your apache config or create an <tt>.htaccess</tt> file in your project root:
+Add the following to your apache config or create an `.htaccess` file in your project root:
 
-bc.. RewriteEngine On
-  
+```
+RewriteEngine On
+
 # Rewrite home to check for static
 RewriteRule ^$ home
 
@@ -53,9 +59,10 @@ ExpiresByType application/javascript "access plus 1 year"
 
 # compress static text files
 AddOutputFilterByType DEFLATE text/html text/plain text/xml text/javascript text/css application/javascript
+```
 
-p. Now pages are delivered by Apache without touching Passenger.
+Now pages are delivered by Apache without touching Passenger.
 
-h2. Page caching with Rails 4
+## Page caching with Rails 4
 
-The built-in page caching has been extracted to a separate gem in Rails 4. You need to add the gem 'actionpack-page_caching' to your Gemfile if you're using Rails 4.
+The built-in page caching has been extracted to a separate gem in Rails 4. You need to add the gem [actionpack-page_caching](https://rubygems.org/gems/actionpack-page_caching) to your Gemfile if you're using Rails 4.

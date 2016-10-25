@@ -2,27 +2,28 @@
 
 Refinery offers a generator which allows an engine/model to have fields which are single images. It doesn't supply anything out-of-the-box to allow a model to have a collection of images.
 
-However the extension *Refinerycms-page-images* implements an image collection for the *Refinery::Page* model which can be extended to other models.
+However Refinery has an extension [refinerycms-page-images](https://github.com/refinery/refinerycms-page-images) which implements an image collection for the Refinery::Page model.
 
-*Thanks to [Prokop Simek](:https://github.com/prokopsimek) who detailed this method [here](:https://github.com/refinery/refinerycms-page-images/issues/111).*
+It is relatively straight-forward to use this plugin to add an image collection to your model.
+
+*Thanks to [Prokop Simek](https://github.com/prokopsimek) who detailed this method [here](https://github.com/refinery/refinerycms-page-images/issues/111.*)
 
 ## What you get
 
 When you have completed these steps your model/engine you will be able to add and remove images from an instance of your model using the same tabbed interface used by Refinery::Pages.
 
-In a view you will have access to a collection of images (*@model.images*).
+In a view you will have access to a collection of images (`@model.images`).
 
 ### Pre-requisites
 
-* Refinerycms
-* Refinerycms-page-images
-* an engine or extension to work with (the examples will use `Shows`)
-
+  - Refinery CMS
+  - refinerycms-page-images
+  - An engine or extension to work with (the examples will use Shows)
 
 ##### Configure Refinerycms-page-images
 
-````Ruby
-#app/config/initializers/refinery/page_images.rb
+```ruby
+# app/config/initializers/refinery/page_images.rb
 Refinery::PageImages.configure do |config|
   config.captions = true
   config.enable_for = [
@@ -31,29 +32,28 @@ Refinery::PageImages.configure do |config|
   ]
   config.wysiwyg = true
 end
-````
+```
 
-#####  Add page-images to your model
+##### Add page-images to your model
 
-````Ruby
+```ruby
 #vendor/extensions/shows/app/models/refinery/shows/show.rb
 module Refinery
   module Shows
     class Show < Refinery::Core::BaseModel
-
       self.table_name = 'refinery_shows'
       validates :title, :presence => true, :uniqueness => true
       has_many_page_images
     end
   end
 end
-````
+```
 
 ##### Define Tabs
 
-````Ruby
-#vendor/extensions/shows/lib/refinery/shows/tabs.rb
- module Refinery
+```ruby
+# in vendor/extensions/shows/lib/refinery/shows/tabs.rb
+module Refinery
   module Shows
     class Tab
       attr_accessor :name, :partial
@@ -69,18 +69,20 @@ end
 
       protected
 
-        def initialize
-          ::Refinery::Shows.tabs << self # add me to the collection of registered tabs
-        end
+      def initialize
+        ::Refinery::Shows.tabs << self # add me to the collection of registered tabs
+      end
     end
   end
- end
- ````
+end
+```
 
 ##### Load and Initialize Tabs
-````Ruby
+
+```ruby
 # vendor/extensions/shows/lib/refinery/shows.rb
 require 'refinerycms-core'
+
 module Refinery
   autoload :ShowsGenerator, 'generators/refinery/shows_generator'
 
@@ -94,7 +96,7 @@ module Refinery
       attr_writer :tabs
 
       def root
-        @root ||= Pathname.new(File.expand_path('../../../', __FILE__))
+        @root ||= Pathname.new(File.expand_path('../../../', *FILE*))
       end
 
       def tabs
@@ -107,77 +109,78 @@ module Refinery
     end
   end
 end
-````
-
+```
 
 ##### Modify the admin view
-````Ruby
-# vendor/extensions/shows/app/views/refinery/admin/_form.html.erb
+
+In `vendor/extensions/shows/app/views/refinery/admin/_form.html.erb`:
+
+```erb
 <%= form_for [refinery, :shows_admin, @show] do |f| -%>
   <%= render '/refinery/admin/error_messages',
-              :object => @show,
-              :include_object_name => true %>
+             :object => @show,
+             :include_object_name => true %>
 
   <div class='field'>
-    <%= f.label :title -%>
-    <%= f.text_field :title, :class => 'larger widest' -%>
+      <%= f.label :title -%>
+      <%= f.text_field :title, :class => 'larger widest' -%>
   </div>
-
   <div class='field'>
-    <div id='page-tabs' class='clearfix ui-tabs ui-widget ui-widget-content ui-corner-all'>
-      <ul id='page_parts'>
-        <li class='ui-state-default ui-state-active'>
-          <%= link_to 'Blurb', "#page_part_blurb" %>
-        </li>
-        <% Refinery::Shows.tabs.each_with_index do |tab, tab_index| %>
-          <li class='ui-state-default' id="custom_<%= tab.name %>_tab">
-            <%= link_to tab.name.titleize, "#custom_tab_#{tab_index}" %>
-          </li>
-        <% end %>
-      </ul>
+      <div id='page-tabs' class='clearfix ui-tabs ui-widget ui-widget-content ui-corner-all'>
+          <ul id='page_parts'>
+              <li class='ui-state-default ui-state-active'>
+                  <%= link_to 'Blurb', "#page_part_blurb" %>
+              </li>
+              <% Refinery::Shows.tabs.each_with_index do |tab, tab_index| %>
+              <li class='ui-state-default' id="custom_<%= tab.name %> _tab">
+                  <%= link_to tab.name.titleize, "#custom_tab_#{tab_index}" %>
+              </li>
+              <% end %>
 
-      <div id='page_part_editors'>
-        <% part_index = -1 %>
-          <%= render 'form_part', :f => f, :part_index => (part_index += 1) -%>
-        <% Refinery::Shows.tabs.each_with_index do |tab, tab_index| %>
-          <div class='page_part' id='<%= "custom_tab_#{tab_index}" %>'>
-            <%= render tab.partial, :f => f %>
+          </ul>
+          <div id='page_part_editors'>
+              <% part_index = -1 %>
+              <%= render 'form_part', :f => f, :part_index => (part_index += 1) -%>
+              <% Refinery::Shows.tabs.each_with_index do |tab, tab_index| %>
+              <div class='page_part' id='<%= "custom_tab_#{tab_index}" %>'>
+                  <%= render tab.partial, :f => f %>
+              </div>
+              <% end %>
           </div>
-        <% end %>
       </div>
-    </div>
   </div>
-
   <%= render '/refinery/admin/form_actions', :f => f,
              :continue_editing => false,
              :delete_title => t('delete', :scope => 'refinery.shows.admin.shows.show'),
-             :delete_confirmation => t('message', :scope => 'refinery.admin.delete', :title => @show.title) -%>
+             :delete_confirmation => t('message', :scope => 'refinery.admin.delete',
+             :title => @show.title) -%>
 <% end -%>
-````
+```
 
 ##### Add strong parameters for the new fields
 
 Part 1. Write a decorator.
 
-````Ruby
+```ruby
 #vendor/extensions/shows/app/decorators/controllers/refinery/admin/shows_controller_decorator.rb
 module RefineryPageImagesShowsControllerDecorator
-    def permitted_show_params
-      # Hand the case where all images have been deleted
-      params[:show][:images_attributes]={} if params[:show][:images_attributes].nil?
-      super <<  [images_attributes: [:id, :caption, :image_page_id]]
-    end
+  def permitted_show_params
+    # Hand the case where all images have been deleted
+    params[:show][:images_attributes] = {} if params[:show][:images_attributes].nil?
+    super << [images_attributes: [:id, :caption, :image_page_id]]
   end
+end
 
 Refinery::Shows::Admin::ShowsController.send :prepend, RefineryPageImagesShowsControllerDecorator
-````
+```
 
-Part 2. Modify the ShowsController (if required)
+Part 2. Tell the Controller to Permit the new parameters it must handle
 
-Some `ModelsControllers` will require this update. It doesn't change the controller itself, but makes it easier to extend the initial list of permitted fields.
+Some Models and Controllers will require this update. It doesn't change the controller itself, but makes it easier to extend the initial list of permitted fields. Later versions of Refinery may generate this automatically.
 
-````Ruby
+```ruby
 #vendor/extensions/shows/app/controllers/refinery/shows/admin/shows_controller.rb
+
 module Refinery
   module Shows
     module Admin
@@ -189,7 +192,7 @@ module Refinery
           params.require(:show).permit(permitted_show_params)
         end
 
-       # private
+        # private
 
         # Only allow a trusted parameter "white list" through.
         def permitted_show_params
@@ -200,5 +203,4 @@ module Refinery
     end
   end
 end
-
-````
+```

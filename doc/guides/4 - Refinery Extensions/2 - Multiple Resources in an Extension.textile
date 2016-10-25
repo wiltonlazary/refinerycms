@@ -16,7 +16,7 @@ Refinery ships with an extension generator that makes adding your own functional
 $ rails generate refinery:engine singular_model_name attribute:type [attribute:type ...]
 </shell>
 
-TIP: to see all the options supported by the +refinery:engine+ generator just run +rails g refinery:engine+.
+TIP: to see all the options supported by the `refinery:engine` generator just run `rails g refinery:engine`.
 
 Here is a list of the different field types available:
 
@@ -41,9 +41,9 @@ Run this command to generate the events extension for Rick:
 $ rails generate refinery:engine event title:string date:datetime photo:image blurb:text
 </shell>
 
-TIP: if you want to create a model without any front-end code (i.e. code only for the administrative interface), add +--skip-frontend+.
+TIP: if you want to create a model without any front-end code (i.e. code only for the administrative interface), add `--skip-frontend`.
 
-TIP: if you want to use a custom namespace for your extension, add +--namespace <namespace_name>+. If you use it, you have to remember to specify this namespace for every scaffold you generate for this extension.
+TIP: if you want to use a custom namespace for your extension, add `--namespace <namespace_name>`. If you use it, you have to remember to specify this namespace for every scaffold you generate for this extension.
 
 This results in the following:
 <shell>
@@ -94,11 +94,11 @@ $ rake db:migrate
 $ rake db:seed
 </shell>
 
-A +refinery:events+ generator is created for you to install the migration to create the events table. Run all the commands provided in the terminal.
+A `refinery:events` generator is created for you to install the migration to create the events table. Run all the commands provided in the terminal.
 
 TIP: When new extensions are added, it's a good idea to restart your server for new changes to be loaded in.
 
-As you can see inside your text editor, the event extension is now stored in +vendor/extensions/events/+. This is where all your files &mdash; including your migration file &mdash; will be placed. The folder structure of +events+ is nearly identical to a normal Rails app, but has a few additions to provide Refinery functionality.
+As you can see inside your text editor, the event extension is now stored in `vendor/extensions/events/`. This is where all your files &mdash; including your migration file &mdash; will be placed. The folder structure of `events` is nearly identical to a normal Rails app, but has a few additions to provide Refinery functionality.
 
 Once you have generated an extension, it's time to create another scaffold to put inside of it.
 
@@ -108,9 +108,9 @@ To do that, run the following command.
   $ rails g refinery:engine place name:string --extension events --namespace events
 </shell>
 
-TIP: You can additionally specify +--pretend+ to simulate generation, so you may inspect the outcome without actually modifying anything.
+TIP: You can additionally specify `--pretend` to simulate generation, so you may inspect the outcome without actually modifying anything.
 
-Notice the last arguments (+--extension <extension_name> --namespace <extension_name>+). This is how Refinery knows which extension to insert your new code. The +--namespace+ argument is necessary because Refinery will create a namespace for your extension by default. If you don't specify one, it's the name of the first scaffold you created. In this case, the namespace is +events+. If you look inside, for example, +vendor/extensions/events/app/controllers/refinery/events/events_controller.rb+, you will see that the opening lines look something like this:
+Notice the last arguments (`--extension <extension_name> --namespace <extension_name>`). This is how Refinery knows which extension to insert your new code. The `--namespace` argument is necessary because Refinery will create a namespace for your extension by default. If you don't specify one, it's the name of the first scaffold you created. In this case, the namespace is `events`. If you look inside, for example, `vendor/extensions/events/app/controllers/refinery/events/events_controller.rb`, you will see that the opening lines look something like this:
 
 <ruby>
 module Refinery
@@ -118,7 +118,7 @@ module Refinery
     class EventsController < ::ApplicationController
 </ruby>
 
-The first two lines indicate that the extension is namespaced using +Refinery::Events+. Refinery will automatically add the +Refinery+ for you, but you will have to manually specify the namespace.
+The first two lines indicate that the extension is namespaced using `Refinery::Events`. Refinery will automatically add the `Refinery` for you, but you will have to manually specify the namespace.
 
 Running this command will produce the following output:
 
@@ -165,15 +165,15 @@ rake db:seed
 ------------------------
 </shell>
 
-WARNING: If you are presented with a conflict in the +events_generator.rb+ file, say no! This happens at the moment because Refinery thinks you are generating a Places extension, and this may cause all kinds of havoc if you agree to it. If you have accidentally agreed to it, you can revert that file, and check your +db/seeds.rb+ file to see if you have accidentally appended an additional line reading +Refinery::Events::Engine.load_seed+.
+WARNING: If you are presented with a conflict in the `events_generator.rb` file, say no! This happens at the moment because Refinery thinks you are generating a Places extension, and this may cause all kinds of havoc if you agree to it. If you have accidentally agreed to it, you can revert that file, and check your `db/seeds.rb` file to see if you have accidentally appended an additional line reading `Refinery::Events::Engine.load_seed`.
 
-Run the commands listed above. Notice +rails generate refinery:events+. The +rails generate refinery:events+ will copy the migration files from +vendor/extensions/events/db/migrate+ to +db/migrate+ and will prepend a timestamp to each migration. This is so an extension that was written before your application will declare its migrations chronologically later than the migrations you wrote for the app. For instance, if you wrote your app on Tuesday and then inserted the extension on Wednesday, you would want the timestamps on the migrations to show Wednesday rather than the date it was created &mdash; perhaps Monday. If the extension didn't do this, when you deployed your application, it would run the migrations for your extension first, potentially failing because it couldn't find the Refinery database tables it needs to complete.
+Run the commands listed above. Notice `rails generate refinery:events`. The `rails generate refinery:events` will copy the migration files from `vendor/extensions/events/db/migrate` to `db/migrate` and will prepend a timestamp to each migration. This is so an extension that was written before your application will declare its migrations chronologically later than the migrations you wrote for the app. For instance, if you wrote your app on Tuesday and then inserted the extension on Wednesday, you would want the timestamps on the migrations to show Wednesday rather than the date it was created &mdash; perhaps Monday. If the extension didn't do this, when you deployed your application, it would run the migrations for your extension first, potentially failing because it couldn't find the Refinery database tables it needs to complete.
 
 h4. Crudify: The Backbone of Refinery Engines
 
-Any Refinery extension, even the built-in ones, that focuses on the standard create, read, update and delete operations are driven by +crudify+. Crudify is a highly reusable module included with Refinery that gives you all the standard CRUD actions as well as reordering, searching and paging.
+Any Refinery extension, even the built-in ones, that focuses on the standard create, read, update and delete operations are driven by `crudify`. Crudify is a highly reusable module included with Refinery that gives you all the standard CRUD actions as well as reordering, searching and paging.
 
-Open up +vendor/extensions/events/app/controllers/refinery/events/admin/events_controller.rb+ and look at its contents:
+Open up `vendor/extensions/events/app/controllers/refinery/events/admin/events_controller.rb` and look at its contents:
 
 <ruby>
 module Refinery
@@ -191,7 +191,7 @@ end
 
 Most of the time, crudify's defaults are bang on, but if you need to, you can easily customise how it works.
 
-By default +crudify+ assumes your records will be sortable. But events should not be manually sortable; it makes more sense to order them by their event date. Update the contents of the file to this:
+By default `crudify` assumes your records will be sortable. But events should not be manually sortable; it makes more sense to order them by their event date. Update the contents of the file to this:
 
 <ruby>
 module Refinery
@@ -209,9 +209,9 @@ module Refinery
 end
 </ruby>
 
-This will tell +crudify+ to sort by our event date field and to turn off manual sorting by the user.
+This will tell `crudify` to sort by our event date field and to turn off manual sorting by the user.
 
-Finally edit +vendor/extensions/events/app/controllers/refinery/events/events_controller.rb+ and replace the +find_all_events+ method with this one:
+Finally edit `vendor/extensions/events/app/controllers/refinery/events/events_controller.rb` and replace the `find_all_events` method with this one:
 
 <ruby>
 module Refinery

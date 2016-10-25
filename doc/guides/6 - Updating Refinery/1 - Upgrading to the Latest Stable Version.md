@@ -1,30 +1,34 @@
-h2. Upgrading to the Latest Stable Version
+# Upgrading to the Latest Stable Version
 
 Refinery constantly changes as we add new features and fix bugs. This guide will show you how to:
 
-* Keep updated with the latest stable versions as they are released
+  - Keep updated with the latest stable versions as they are released
 
 endprologue.
 
-h3. Introduction
+### Introduction
 
-First, you need a current installation of Refinery. Refinery would have been installed by one of two ways, Rubygem or Git. When updating, the latest files are copied into your project.
+First, you need a current installation of Refinery. Refinery would have been installed by one of two ways, Ruby Gem or Git. When updating, the latest files are copied into your project.
 
-h3. Updating a Gem Installation of Refinery
+### Updating a Gem Installation of Refinery
 
-Take a look at "https://rubygems.org/gems/refinerycms":https://rubygems.org/gems/refinerycms to find the latest version number for Refinery.
+Take a look at <https://rubygems.org/gems/refinerycms> to find the latest version number for Refinery.
 
-Edit your `Gemfile` to reference the latest version of Refinery (a later version than the one shown "may exist":https://rubygems.org/gems/refinerycms/versions).
+Edit your `Gemfile` to reference the latest version of Refinery (a later version than the one shown [may exist](https://rubygems.org/gems/refinerycms/versions)).
 
-<ruby>
+```ruby
+
 gem 'refinerycms', '~> 3.0.0'
-</ruby>
+
+```
 
 Now install the new gems using bundler's update functionality:
 
-<shell>
+```shell
+
 $ bundle update refinerycms
-</shell>
+
+```
 
 Inside the application's directory, use the Rails generator to update your Refinery installation:
 
@@ -32,13 +36,17 @@ TIP: You only need to run the below step when upgrading between major or minor v
 
 WARNING: This will overwrite files so make sure you have a backup or have your current code committed to a remote git repository.
 
-<shell>
+```shell
+
 $ rails generate refinery:cms --update
-</shell>
+
+```
 
 Database migrations and new gem dependencies may have been added, so finish your Refinery update with:
 
-<shell>
+```shell
+
 $ bin/rake db:migrate
 $ bundle install
-</shell>
+
+```

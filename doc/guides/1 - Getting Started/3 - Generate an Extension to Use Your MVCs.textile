@@ -25,7 +25,7 @@ This guide does not assume that you have any prior experience with Refinery beyo
 
 h3. The Anatomy of an Extension
 
-Think of a Refinery extension as a miniature Rails application running in your +vendor/extensions+ directory. Each extension specifies its own routes in its config directory and has its own views and controllers in its own app directory. In fact, each extension is actually a *Rails engine.*  Engines can serve up their own images, stylesheets and javascripts by utilizing the asset pipeline, which got introduced in Rails 3.1.  You can define your own models, views, and controllers in an extension and they can take full advantage of all of the functionality that Refinery offers.
+Think of a Refinery extension as a miniature Rails application running in your `vendor/extensions` directory. Each extension specifies its own routes in its config directory and has its own views and controllers in its own app directory. In fact, each extension is actually a *Rails engine.*  Engines can serve up their own images, stylesheets and javascripts by utilizing the asset pipeline, which got introduced in Rails 3.1.  You can define your own models, views, and controllers in an extension and they can take full advantage of all of the functionality that Refinery offers.
 
 Since an extension is a kind of engine, it has the same familiar directory structure.  You'll see folders for your models, views, controllers, helpers, decorators, config, and so forth.  Your code goes in those folders just as it does in a regular Rails application or engine.
 
@@ -38,7 +38,7 @@ Refinery ships with an extension generator that makes adding your own functional
 $ rails generate refinery:engine singular_model_name attribute:type [attribute:type ...]
 </shell>
 
-TIP: to see all the options supported by the +refinery:engine+ generator just run +rails g refinery:engine+.
+TIP: to see all the options supported by the `refinery:engine` generator just run `rails g refinery:engine`.
 
 Here is a list of the most often used field types and what they give you:
 
@@ -114,7 +114,7 @@ $ rake db:migrate
 $ rake db:seed
 </shell>
 
-A line for the events extension has been added in the Gemfile of your application. +bundle install+ will verify and load the extension.  A generator has been created for you that will automatically create the event table and db seed calls for you: +rails generate refinery:events+ will generate the migration and db seed files for the extension based on the fields you specified in the +rails generate refinery:engine ...+ command.  And finally, running +rake db:migrate+ and +rake db:seed+ will load and run the migration and db:seed files that you just generated for the events extension. .
+A line for the events extension has been added in the Gemfile of your application. `bundle install` will verify and load the extension.  A generator has been created for you that will automatically create the event table and db seed calls for you: `rails generate refinery:events` will generate the migration and db seed files for the extension based on the fields you specified in the `rails generate refinery:engine ...` command.  And finally, running `rake db:migrate` and `rake db:seed` will load and run the migration and db:seed files that you just generated for the events extension. .
 
 When you run bundle install, you may see a message that says
 
@@ -123,7 +123,7 @@ When you run bundle install, you may see a message that says
    authors may not be empty
 </shell>
 
-This is a warning message from RubyGems telling you that no author is specified for this extension.  This is only important if you are going to create a gem from this extension.  You can safely ignore this message.  If you do want to resolve it and get rid of the message, you can edit the "gem specification file":http://guides.rubygems.org/specification-reference/ for the extension  +refinerycms-events.gemspec+ and put your name in there as the author. Just put this line: +s.author = 'yourname'+ in the do block (after the +s.version....+ line is fine).
+This is a warning message from RubyGems telling you that no author is specified for this extension.  This is only important if you are going to create a gem from this extension.  You can safely ignore this message.  If you do want to resolve it and get rid of the message, you can edit the "gem specification file":http://guides.rubygems.org/specification-reference/ for the extension  `refinerycms-events.gemspec` and put your name in there as the author. Just put this line: `s.author = 'yourname'` in the do block (after the `s.version....` line is fine).
 
 
 TIP: When new extensions are added it's a good idea to restart your server for new changes to be loaded in.
@@ -140,7 +140,7 @@ Add a couple of mock events to your events extension.
 
 Now click on "Switch to your website", and navigate to "http://localhost:3000/events":http://localhost:3000/events
 
-You'll notice not only has Refinery generated the backend "Events" tab but also a new menu item called "Events" and two new front-end views, +index.html.erb+ and +show.html.erb+, located in +vendor/extensions/events/app/views/refinery/events/+ for you to customise.
+You'll notice not only has Refinery generated the backend "Events" tab but also a new menu item called "Events" and two new front-end views, `index.html.erb` and `show.html.erb`, located in `vendor/extensions/events/app/views/refinery/events/` for you to customise.
 
 !/system/images/W1siZiIsIjIwMTAvMTIvMDIvMTRfMjRfNTFfNDE1X2V2ZW50c19lbmdpbmVfc21hbGwucG5nIl1d/14_24_51_415_events_extension_small.png!
 
@@ -156,7 +156,7 @@ h3. Crudify: The Backbone of Refinery Engines
 
 Any Refinery extension, even the built-in ones, that focus on Create, Read, Update and Delete are driven by crudify. Crudify is a highly reusable module included with Refinery that gives you all the standard CRUD actions as well as reordering, searching and paging.
 
-Open up +vendor/extensions/events/app/controllers/refinery/events/admin/events_controller.rb+ and look at its contents:
+Open up `vendor/extensions/events/app/controllers/refinery/events/admin/events_controller.rb` and look at its contents:
 
 <ruby>
 module Refinery
@@ -174,7 +174,7 @@ end
 
 Most of the time, crudify's defaults are bang on, but if you need to, you can easily customise how it works.
 
-By default +crudify+ assumes your records will be sortable. But events should not be manually sortable; it makes more sense to order them by their event date. Update the contents of the file to this:
+By default `crudify` assumes your records will be sortable. But events should not be manually sortable; it makes more sense to order them by their event date. Update the contents of the file to this:
 
 <ruby>
 module Refinery
@@ -192,9 +192,9 @@ module Refinery
 end
 </ruby>
 
-This will tell +crudify+ to sort by our event date field and to turn off manual sorting by the user.
+This will tell `crudify` to sort by our event date field and to turn off manual sorting by the user.
 
-Finally edit +vendor/extensions/events/app/controllers/refinery/events/events_controller.rb+ and replace the +find_all_events+ method with this one:
+Finally edit `vendor/extensions/events/app/controllers/refinery/events/events_controller.rb` and replace the `find_all_events` method with this one:
 
 <ruby>
 module Refinery

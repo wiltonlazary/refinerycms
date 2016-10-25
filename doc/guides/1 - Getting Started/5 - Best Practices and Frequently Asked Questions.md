@@ -1,13 +1,13 @@
-h2. Best Practices and Frequently Asked Questions
+# Best Practices and Frequently Asked Questions
 
 This guide covers recommendations on best practices for coding Refinery sites,
 and also attempts to document answers to the most frequently asked questions.
 
 endprologue.
 
-h3. General
+### General
 
-h4. I've never done any Ruby or Rails development. Will Refinery be easy to use for me?
+#### I've never done any Ruby or Rails development. Will Refinery be easy to use for me?
 
 The answer depends on the amount of work you are willing to put in to learn the
 system. If you've never done any programming, then there is an obvious challenge
@@ -26,12 +26,12 @@ confusion and much time.
 
 There are number of wonderful resources to help you to learn Ruby and Rails. To name a few:
 
-* "iwanttolearnruby":http://iwanttolearnruby.com by "Amanda Wagener":http://awagener.com
-* "Code School":http://codeschool.com by "Envy Labs":http://envylabs.com
+  - [iwanttolearnruby](http://iwanttolearnruby.com) by [Amanda Wagener](http://awagener.com)
+  - [Code School](http://codeschool.com) by [Envy Labs](http://envylabs.com)
 
-h3. Best Practices
+### Best Practices
 
-h4. I need to make serious changes to an engine in my application. What's the best way to do that?
+#### I need to make serious changes to an engine in my application. What's the best way to do that?
 
 To be glib, the best way to make changes is not to make changes.
 If you want to take advantage of automatic updating, it's best not to override
@@ -44,43 +44,45 @@ If you can't escape this, overwrite the method by redefining it.
 In the case of a controller method, you can get easy access to the code with
 the `refinery:uncrudify` rake task:
 
-<shell>
+```shell
 $ bin/rake refinery:uncrudify controller=refinery/admin/pages action=create
-</shell>
+```
 
 TIP. Running the `rake refinery:uncrudify` task outputs to `stdout`, and will not modify any files, so you can do so without fear of overwriting your existing controller modifications.
 
 If you absolutely must modify an existing engine in large pieces, you can install
-the gem and unpack it to your `vendor/extensions` directory.  The example below
+the gem and unpack it to your `vendor/extensions` directory. The example below
 demonstrates this using the refinerycms-news extension at version 2.0.0:
 
-<shell>
+```shell
 gem unpack refinerycms-news --version 2.0.0 --target vendor/extensions
-</shell>
+```
 
 And update the relevant line in your `Gemfile` to read:
 
-<ruby>
+```ruby
 gem 'refinerycms-news', '2.0.0', :path => 'vendor/extensions/refinerycms-news-2.0.0'
-</ruby>
+```
 
 TIP. For convenience, you can rename the folder of the unpacked gem to something short, like 'news', so long as you update the path specified in the Gemfile.
 
-h3. Pages
+### Pages
 
-h4. How do I add a new page part to all existing pages?
+#### How do I add a new page part to all existing pages?
 
 There is no facility for this. In your console, you will have to run:
 
-<ruby>
-Refinery::Page.all.map do { |p| p.parts.create(:title => "My Page Part", :position => 3) }
-</ruby>
+```ruby
+Refinery::Page.all.each do |p|
+  p.parts.create(:title => "My Page Part", :position => 3)
+end
+```
 
 If you wish to make this a default for all new pages, be sure to add it to your
 default parts (in 1.0.x, this is in your Settings tab; in 2.0.x, it is in the
 `config/initializers/refinery/pages.rb` file).
 
-h4. When I go to /news or the URL of an engine, it tells me it can't find @page! What's going on?
+#### When I go to /news or the URL of an engine, it tells me it can't find @page! What's going on?
 
 Did you change the URL to which the page pointing to the engine redirects?
 If your News Page doesn't redirect to /news, then things will stop working.
@@ -90,27 +92,27 @@ This is caused by the `present(@page)` statement usually found in your controlle
 As long as you present a page or another model with the appropriate attributes,
 then you should be in the clear.
 
-h4. How do I hide the page title?
+#### How do I hide the page title?
 
-"Phil":http://p.arndt.io, one of the chief maintainers of Refinery CMS, says:
+[Phil](http://p.arndt.io), one of the chief maintainers of Refinery CMS, says:
 
-bq. Add a `content_for :body_content_title` block in the template you're including from. Just make it blank and tell the `_content_page` partial to hide empty sections by passing it `:locals => {:hide_sections => [:body_content_title]}`.
+> Add a `content_for :body_content_title` block in the template you're including from. Just make it blank and tell the `_content_page` partial to hide empty sections by passing it `:locals => {:hide_sections => [:body_content_title]}`.
 
-h3. Translation
+### Translation
 
-h4. How do I translate a 1.0.9 engine?
+#### How do I translate a 1.0.9 engine?
 
-Please see this "gist":https://gist.github.com/3649d08ab3c84b24ab52.
+Please see this [gist](https://gist.github.com/3649d08ab3c84b24ab52).
 
-h3. FriendlyId
+### FriendlyId
 
-h4. I screwed up one of the URL slugs on a site. How do I redo them?
+#### I screwed up one of the URL slugs on a site. How do I redo them?
 
-In Refinery 2.0.x, the slug will be re-written when you resave the page.
+In Refinery 2.0.x, the slug will be re-written when you re-save the page.
 
 In Refinery 1.0.x, you have have two choices. The more severe one is to reset all
 slugs for that model:
 
-<shell>
+```shell
 MODEL=news_item bin/rake friendly_id:redo_slugs
-</shell>
+```

@@ -1,43 +1,51 @@
-# Upgrading a Refinery app to Refinery3, Rails 4.2#
+# Upgrading a Refinery app to Refinery 3.0, Rails 4.2
 
-## Remove old values from config files ##
-1. DELETE config.active_record.whitelist_attributes
-2. DELETE config.active_record.mass_assignment_sanitizer
-3. DELETE config.active_record.auto_explain_threshold_in_seconds
-4. CHANGE config.serve_static_assets  TO config.serve_static_files
-5. SET config.eager_load TO false (dev and test), true (production)
+endprologue.
 
-## Add secrets.yml ##
+### Remove old values from config files
+
+1.  DELETE `config.active_record.whitelist_attributes`
+2.  DELETE `config.active_record.mass_assignment_sanitizer`
+3.  DELETE `config.active_record.auto_explain_threshold_in_seconds`
+4.  CHANGE `config.serve_static_assets` TO `config.serve_static_files`
+5.  SET `config.eager_load` TO `false` (dev and test), `true` (production)
+
+### Add secrets.yml
+
 See [the ruby upgrade guide](http://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html) for exact details
 
-## In your models and controllers ##
-1. Remove `attr_accessible` statements in your models.
-Control of which model attributes can be updated has moved from the model to the controller. 
-This feature is known as 'Strong Parameters'. 
+### In your models and controllers
 
-2. Add the attributes as strong parameters in your controllers
+1.  Remove `attr_accessible` statements in your models.
+    Control of which model attributes can be updated has moved from the model to the controller.
+    This feature is known as `Strong Parameters`.
 
-####Example
+2.  Add the attributes as strong parameters in your controllers
+
+#### Example
 **Before**
-````ruby
+```ruby
+
 #app/models/person.rb
 ...
 attr_accessible :name, :title
 ...
-````
+
+```
 
 **After**
-````ruby
+```ruby
+
 #app/controllers/people_controller.rb
 
 def new
   @person = Person.new(new_person_params)
-....
+  # ... etc
 
 def update
   if @person.update(person_params)
-  etc
-...
+  # ... etc
+
 protected
 
 def new_person_params
@@ -47,91 +55,106 @@ end
 def person_params
   params.require(:person).permit(:name, :title)
 end
-````
+
+```
 
 *Note: different actions can permit different sets of attributes, or all actions can share a single set of permitted attributes.
 In the example above the `create` action can only set the person's name, while the `update` action can set the name and title.*
 
-## In Engines and Extensions ##
+### In Engines and Extensions
 
-**In admin controllers**
+#### In admin controllers
 
-If your app or extension uses Refinery's crudify you must define a strong parameters method, as *crudify* will call it (whether you need it nor not).
+If your app or extension uses Refinery's crudify you must define a strong parameters method, as **crudify** will call it (whether you need it nor not).
 It can be a no-op, thus:
 
-````ruby
+```ruby
+
 def mymodel_params
 end
-````
 
-** No more dashboard **
+```
 
-The Refinery dashboard has gone. 
+#### No more dashboard
+
+The Refinery dashboard has gone.
 
 From `engine.db` remove the code which linked to the dashboard and avoid the deprecation notice.
-````ruby
-  plugin.activity = {...}
-````
 
+```ruby
 
-** FriendlyId Changes **
+plugin.activity = {...}
+
+```
+
+#### FriendlyId Changes
 
 In order to continue allowing `.find(id)` to work:
 
-````ruby
+```ruby
+
 friendly_id :title, use: :slugged
-````
+
+```
 needs to become:
-````ruby
+```ruby
+
 friendly_id :title, use: [:slugged, :finders]
-````
 
-There are also some other major changes in friendly_id: https://github.com/norman/friendly_id
+```
 
+There are also some other major changes in [friendly_id](https://github.com/norman/friendly_id)
 
-## Refinery Upgrade ##
-run  `rails generate refinery:cms --update`
+### Refinery Upgrade
 
-*(this will run rake db:migrate and rake db:seed)*
+run `rails generate refinery:cms --update`
 
-### If you are using Refinerycms-blog ###
+*(this will run `rake db:migrate` and `rake db:seed`)*
+
+### If you are using Refinerycms-blog
+
 run `rake acts_as_taggable_on_engine:install:migrations`
 
-### If you are using Devise ###
-See https://github.com/refinery/refinerycms-authentication-devise
+### If you are using Devise
 
-## Check files that you have over-ridden ##
+See [refinerycms-authentication-devise](https://github.com/refinery/refinerycms-authentication-devise)
+
+### Check files that you have over-ridden
 Check your app for any Refinery files that you may have over-ridden.
 Compare them to the new Refinery files
-* Do you still need to override them?
-* Are there changes you need to include in your copy of the file?
-* Is there another way of making your change without overriding? 
 
-Making changes to Refinery's default behavour using presenters and decorators will make future upgrades easier as your changes are separate from Refinery itself. 
+1.  Do you still need to override them?
+2.  Are there changes you need to include in your copy of the file?
+3.  Is there another way of making your change without overriding?
 
+Making changes to Refinery's default behavour using presenters and decorators will make future upgrades easier as your changes are separate from Refinery itself.
 
-## Refinery::Search changes
+### Refinery::Search changes
+
 In application.rb DELETE
 
-````ruby
+```ruby
+
 config.to_prepare do
   Refinery.searchable_models = Refinery::Page
 end
-````
 
-CREATE config/initializers/refinery/search.rb with an entry similar to the following
-````ruby
+```
+
+CREATE `config/initializers/refinery/search.rb` with an entry similar to the following
+
+```ruby
+
 #config/initializers/refinery/search.rb
 Refinery::Search.configure do |config|
   config.enable_for = ['Refinery::Page']
 end
-````
 
-### Search Route
+```
 
-- The url helper method has been renamed from `refinery.search_path`
-  to `refinery.search_root_path`
-- The search method has changed from POST to GET
+#### Search Route
 
-More information in [refinerycms-search
-documentation](https://github.com/refinery/refinerycms-search)
+1.  The url helper method has been renamed from `refinery.search_path` to `refinery.search_root_path`
+2.  The search method has changed from POST to GET
+
+More information in [refinerycms-search documentation](https://github.com/refinery/refinerycms-search)

@@ -1,29 +1,39 @@
-h1. Changing Menu Markup with a Menu Presenter
+# Changing Menu Markup with a Menu Presenter
 
-Popular web frameworks like "Twitter Bootstrap":http://getbootstrap.com/ and "Zurb Foundation":http://foundation.zurb.com/ require specific markup to implement navigation elements.
+Popular web frameworks like [Twitter Bootstrap](http://getbootstrap.com/) and [Zurb Foundation](http://foundation.zurb.com/) require specific markup to implement navigation elements.
 
 Here we will implement a simple navigation bar with markup for Foundation.
 
-h2. Setup
+## Setup
 
-Override the refinery file which creates the menu, and replace it with the following code
+Override the refinery file which creates the menu:
 
-bc.. rake refinery:override view=refinery/_header.html
+```shell
+rake refinery:override view=refinery/_header.html
+```
 
+Now, replace it with the following code:
+
+```erb
 #/app/views/refinery/shared/_header.html.erb
 ...
+
 <section class="top-bar-section" id="menu">
   <%= foundation_menu(refinery_menu_pages, list_tag_css: 'left').to_html %>
+
   <ul class='right'>
-    <li> <a href="/contact">Contact Us</a></li>
+    <li>
+      <a href="/contact">Contact Us</a>
+    </li>
   </ul>
 </section>
+```
 
-p. Next an application helper.
+Next, an application helper:
 
-bc..
- #app/helpers/ApplicationHelper
-  Module ApplicationHelper
+```ruby
+#app/helpers/ApplicationHelper
+Module ApplicationHelper
   # Creates a dropdown menu with items matching Refinery pages
   # and tags/css matching Foundation markup
   #
@@ -37,17 +47,19 @@ bc..
   # * `:active_css` - The css class denoting a active menu item
   # * `:selected_css` - The css class denoting a current menu item
   def foundation_menu(items, options = {})
-    presenter = Refinery::Pages::FoundationMenuPresenter.new(items, self)
-    %w(menu_tag dom_id css list_dropdown_css list_item_dropdown_css list_tag_css active_css selected_css).map(&:to_sym).each do |k|
-      presenter.send("#{k}=", options[k]) if options.has_key?(k)
+    Refinery::Pages::FoundationMenuPresenter.new(items, self).tap do |presenter|
+      %w(menu_tag dom_id css list_dropdown_css list_item_dropdown_css list_tag_css active_css selected_css).map(&:to_sym).each do |k|
+        presenter.send("#{k}=", options[k]) if options.has_key?(k)
+      end
     end
-    presenter
   end
 end
+```
 
-p. And finally the menu presenter.
+Finally, the menu presenter:
 
-bc..
+```ruby
+
 # app/presenters/zurb_menu_presenter.rb
 module Refinery
   module Pages
@@ -78,6 +90,7 @@ module Refinery
 
       def render_menu_items(menu_items)
         return if menu_items.blank?
+
         content_tag(list_tag, :class => menu_items_css(menu_items)) do
           menu_items.each_with_index.inject(ActiveSupport::SafeBuffer.new) do |buffer, (item, index)|
             buffer << render_menu_item(item, index)
@@ -86,7 +99,7 @@ module Refinery
       end
 
       def check_for_dropdown_item(menu_item)
-        ( menu_item != roots.first ) && ( menu_item_children( menu_item ).count > 0 )
+        menu_item != roots.first && menu_item_children(menu_item).any?
       end
 
       def menu_items_css(menu_items)
@@ -107,8 +120,8 @@ module Refinery
         css << active_css if descendant_item_selected?(menu_item)
         css << selected_css if selected_item?(menu_item)
         css << list_item_dropdown_css if check_for_dropdown_item(menu_item)
-        css << first_css if index == 0
-        css << last_css if index == menu_item.shown_siblings.length
+        css << first_css if index  0
+        css << last_css if index  menu_item.shown_siblings.length
 
         css.reject(&:blank?).presence
       end
@@ -126,7 +139,8 @@ module Refinery
     end
   end
 end
+```
 
+#### Thanks
 
-h4. Thanks
-Many thanks to "Moo the blog's post":http://blog.milkfarmproductions.com/post/73806803072/refinery-cms-and-zurb-foundation-5 which is what I used to get started.
+Many thanks to [Moo the blog's post](http://blog.milkfarmproductions.com/post/73806803072/refinery-cms-and-zurb-foundation-5) which is what I used to get started.
