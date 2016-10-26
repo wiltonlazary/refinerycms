@@ -1,12 +1,13 @@
-# Installation Prerequisites
-
-This guide covers getting your system ready for Refinery. Afterwards you will have:
+---
+title: Installation Prerequisites
+abstract: |
+  This guide covers getting your system ready for Refinery. Afterwards you will have:
 
   - A working version of Ruby
   - ImageMagick installed
   - Either the SQLite, MySQL, or PostgreSQL database configured
-
-endprologue.
+---
+# Installation Prerequisites
 
 ### Checklist
 
